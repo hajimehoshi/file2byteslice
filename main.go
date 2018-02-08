@@ -55,7 +55,8 @@ func write(w io.Writer, r io.Reader) error {
 		}
 	}
 
-	fmt.Fprintln(w, "\n}")
+	fmt.Fprintln(w)
+	fmt.Fprintln(w, "}")
 	return nil
 }
 
