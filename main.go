@@ -35,7 +35,10 @@ var (
 func write(w io.Writer, r io.Reader) error {
 	if *compress {
 		compressed := &bytes.Buffer{}
-		cw := gzip.NewWriter(compressed)
+		cw, err := gzip.NewWriterLevel(compressed, gzip.BestCompression)
+		if err != nil {
+			return err
+		}
 		if _, err := io.Copy(cw, r); err != nil {
 			return err
 		}
