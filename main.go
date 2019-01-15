@@ -30,7 +30,7 @@ var (
 	outputFilename = flag.String("output", "", "output filename")
 	packageName    = flag.String("package", "main", "package name")
 	varName        = flag.String("var", "_", "variable name")
-	varIndex       = flag.String("varindex", "_", "variable index")
+	varIndex       = flag.String("varindex", "", "variable index")
 	compress       = flag.Bool("compress", false, "use gzip compression")
 	buildtags      = flag.String("buildtags", "", "build tags")
 )
