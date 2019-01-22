@@ -148,7 +148,7 @@ func main() {
 				panic(err)
 			}
 			current++
-			fmt.Printf("Finish: %d/%d", current, size)
+			fmt.Printf("\n\tFinish: %d/%d", current, size)
 
 		}
 		fmt.Println("=== Finish ===")
