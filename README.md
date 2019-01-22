@@ -4,6 +4,8 @@ A dead simple tool to embed a file to Go.
 
 ```
 Usage of file2byteslice:
+  -folder
+        generate all file in folder with packageName is folder name and variable name from filename_extension
   -buildtags string
         build tags
   -compress

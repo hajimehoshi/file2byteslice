@@ -22,7 +22,10 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 var (
@@ -33,6 +36,7 @@ var (
 	varIndex       = flag.String("varindex", "", "variable index")
 	compress       = flag.Bool("compress", false, "use gzip compression")
 	buildtags      = flag.String("buildtags", "", "build tags")
+	folder         = flag.Bool("folder", false, "all folder file input")
 )
 
 func write(w io.Writer, r io.Reader) error {
@@ -61,14 +65,14 @@ func write(w io.Writer, r io.Reader) error {
 		return err
 	}
 	if *buildtags != "" {
-		if _, err := fmt.Fprintln(w, "\n// +build " + *buildtags); err != nil {
+		if _, err := fmt.Fprintln(w, "\n// +build "+*buildtags); err != nil {
 			return err
 		}
 	}
 	if _, err := fmt.Fprintln(w, ""); err != nil {
 		return err
 	}
-	if _, err := fmt.Fprintln(w, "\npackage " + *packageName); err != nil {
+	if _, err := fmt.Fprintln(w, "\npackage "+*packageName); err != nil {
 		return err
 	}
 	if *varIndex == "" {
@@ -117,7 +121,40 @@ func run() error {
 
 func main() {
 	flag.Parse()
-	if err := run(); err != nil {
-		panic(err)
+	if *folder {
+		dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("folder", filepath.Base(dir))
+
+		files, err := ioutil.ReadDir("./")
+		if err != nil {
+			log.Fatal(err)
+		}
+		current := 0
+		size := len(files)
+		*packageName = filepath.Base(dir)
+		for _, f := range files {
+			//fmt.Println(f.Name())
+			fmt.Println("\nGenerate file: ", f.Name())
+			if !f.IsDir() {
+				*inputFilename = f.Name()
+				splitName := strings.Split(*inputFilename, ".")
+				*outputFilename = splitName[0] + ".go"
+				*varName = strings.Title(strings.Replace(splitName[0], " ", "_", -1)) + "_" + splitName[1]
+			}
+			if err := run(); err != nil {
+				panic(err)
+			}
+			current++
+			fmt.Printf("Finish: %d/%d", current, size)
+
+		}
+		fmt.Println("=== Finish ===")
+	} else {
+		if err := run(); err != nil {
+			panic(err)
+		}
 	}
 }
