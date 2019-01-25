@@ -71,6 +71,9 @@ func write(w io.Writer, r io.Reader) error {
 	if _, err := fmt.Fprintln(w, "\npackage " + *packageName); err != nil {
 		return err
 	}
+	if _, err := fmt.Fprintln(w, ""); err != nil {
+		return err
+	}
 	if *varIndex == "" {
 		if _, err := fmt.Fprintf(w, "var %s = []byte(%q)\n", *varName, string(bs)); err != nil {
 			return err
