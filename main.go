@@ -72,11 +72,11 @@ func write(w io.Writer, r io.Reader) error {
 		return err
 	}
 	if *varIndex == "" {
-		if _, err := fmt.Fprintf(w, "var %s = []byte(%q)", *varName, string(bs)); err != nil {
+		if _, err := fmt.Fprintf(w, "var %s = []byte(%q)\n", *varName, string(bs)); err != nil {
 			return err
 		}
 	} else {
-		if _, err := fmt.Fprintf(w, "func init() { %s[%s] = []byte(%q) }", *varName, *varIndex, string(bs)); err != nil {
+		if _, err := fmt.Fprintf(w, "func init() { %s[%s] = []byte(%q) }\n", *varName, *varIndex, string(bs)); err != nil {
 			return err
 		}
 	}
