@@ -30,7 +30,6 @@ var (
 	outputFilename = flag.String("output", "", "output filename")
 	packageName    = flag.String("package", "main", "package name")
 	varName        = flag.String("var", "_", "variable name")
-	varIndex       = flag.String("varindex", "", "variable index")
 	compress       = flag.Bool("compress", false, "use gzip compression")
 	buildtags      = flag.String("buildtags", "", "build tags")
 )
@@ -61,27 +60,21 @@ func write(w io.Writer, r io.Reader) error {
 		return err
 	}
 	if *buildtags != "" {
-		if _, err := fmt.Fprintln(w, "\n// +build " + *buildtags); err != nil {
+		if _, err := fmt.Fprintln(w, "\n// +build "+*buildtags); err != nil {
 			return err
 		}
 	}
 	if _, err := fmt.Fprintln(w, ""); err != nil {
 		return err
 	}
-	if _, err := fmt.Fprintln(w, "package " + *packageName); err != nil {
+	if _, err := fmt.Fprintln(w, "package "+*packageName); err != nil {
 		return err
 	}
 	if _, err := fmt.Fprintln(w, ""); err != nil {
 		return err
 	}
-	if *varIndex == "" {
-		if _, err := fmt.Fprintf(w, "var %s = []byte(%q)\n", *varName, string(bs)); err != nil {
-			return err
-		}
-	} else {
-		if _, err := fmt.Fprintf(w, "func init() { %s[%s] = []byte(%q) }\n", *varName, *varIndex, string(bs)); err != nil {
-			return err
-		}
+	if _, err := fmt.Fprintf(w, "var %s = []byte(%q)\n", *varName, string(bs)); err != nil {
+		return err
 	}
 	return nil
 }
