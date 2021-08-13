@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"strings"
 )
 
 // Write writes a Go byte slice literal to w from the bytes of r.
@@ -46,7 +47,10 @@ func Write(w io.Writer, r io.Reader, compress bool, buildTags string, packageNam
 		return err
 	}
 	if buildTags != "" {
-		if _, err := fmt.Fprintln(w, "\n// +build "+buildTags); err != nil {
+		if _, err := fmt.Fprintln(w, "\n//go:build "+strings.Join(strings.Split(buildTags, ","), " && ")); err != nil {
+			return err
+		}
+		if _, err := fmt.Fprintln(w, "// +build "+buildTags); err != nil {
 			return err
 		}
 	}
